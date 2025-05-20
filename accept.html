@@ -89,5 +89,43 @@
         }
     </style>
 
+    <script>
+        function yesClicked() {
+            document.getElementById('response').classList.remove('hidden');
+            document.getElementById('btnYes').classList.add('hidden');
+            document.getElementById('btnNo').classList.add('hidden');
+        }
+
+        function dodgeButton() {
+            const btn = document.getElementById('btnNo');
+            btn.style.position = 'absolute';
+            btn.style.left = Math.random() * 80 + 'vw';
+            btn.style.top = Math.random() * 80 + 'vh';
+            
+            const messages = [
+                "Are you sure?",
+                "Think again!",
+                "I'll never give up!",
+                "Try clicking YES!",
+                "You don't mean that!",
+                "Give me a chance!",
+                "My heart is breaking!",
+                "Please reconsider!",
+                "Is that your final answer?",
+                "Even the code is crying",
+                "Don't do me like that",
+                "You clicked the wrong button",
+                "You meant YES",
+                "Hey, feelings don’t dodge!",
+                "C’mon, I brought snacks",
+                "I'll wait... forever",
+                "Rejecting should be illegal",
+            ];
+
+            btn.textContent = messages[Math.floor(Math.random() * messages.length)];
+        }
+        
+    </script>
+
 </body>
 </html>
