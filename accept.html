@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accept Me?</title>
     <link rel="icon" href="images/heart.png">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div class="page">
-
-        <h1>One More Question <span class="heart"></span>❤</h1>
-
+        <h1>One More Question <span class="heart">❤</span></h1>
         <p>You've read my words, my promise, my heart...</p>
         <p>Would you maybe want to start something real... with me?</p>
 
@@ -21,8 +20,19 @@
             <button class="btn btn-no" id="btnNo" onmouseover="dodgeButton()">No</button>
         </div>
 
-        <p id="response" class="hidden">I knew you'd say yes! <span class="heart">❤</span> Let's start this beautiful journey together!</p>
+        <div id="response" class="hidden">
+            <h2 class="celebration-text">I knew you'd say yes! <span class="heart">❤</span></h2>
+            <p class="celebration-subtext">Let's start this beautiful journey together!</p>
+            
+            <div class="video-reveal">
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div id="confetti-container"></div>
 
     <style>
         body {
@@ -33,6 +43,7 @@
             color: #333;
             text-align: center;
             transition: all 0.5s;
+            overflow-x: hidden;
         }
 
         .page {
@@ -43,12 +54,20 @@
             justify-content: center;
             align-items: center;
             box-sizing: border-box;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
             color: #ff6b6b;
             font-size: 2.5em;
             margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #ff6b6b;
+            font-size: 2em;
+            margin: 30px 0;
         }
 
         p {
@@ -81,19 +100,114 @@
         .heart {
             color: #ff6b6b;
             font-size: 1.5em;
-            animation: pulse 5s infinite;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
 
         .hidden {
             display: none;
         }
+
+        /* Celebration styles */
+        .celebration-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3em;
+            color: #ff6b6b;
+            animation: fadeIn 1s, bounce 2s infinite;
+            margin-bottom: 20px;
+        }
+
+        .celebration-subtext {
+            font-size: 1.5em;
+            animation: fadeIn 1.5s;
+            margin-bottom: 40px;
+        }
+
+        .video-reveal {
+            animation: fadeIn 2s, slideUp 1.5s;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+
+        /* Confetti styles */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0.8;
+            animation: confetti-fall 5s linear forwards;
+            z-index: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 
     <script>
         function yesClicked() {
-            document.getElementById('response').classList.remove('hidden');
+            // Hide buttons
             document.getElementById('btnYes').classList.add('hidden');
             document.getElementById('btnNo').classList.add('hidden');
+            
+            // Show response
+            document.getElementById('response').classList.remove('hidden');
+            
+            // Start celebrations
+            createConfetti();
+            playCelebration();
         }
 
         function dodgeButton() {
@@ -116,8 +230,8 @@
                 "Don't do me like that",
                 "You clicked the wrong button",
                 "You meant YES",
-                "Hey, feelings don’t dodge!",
-                "C’mon, I brought snacks",
+                "Hey, feelings don't dodge!",
+                "C'mon, I brought snacks",
                 "I'll wait... forever",
                 "Rejecting should be illegal",
             ];
@@ -125,6 +239,31 @@
             btn.textContent = messages[Math.floor(Math.random() * messages.length)];
         }
         
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#ffb8b8', '#ff8e8e', '#ffd3d3', '#ff9e9e'];
+            const container = document.getElementById('confetti-container');
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(confetti);
+            }
+        }
+        
+        function playCelebration() {
+            // You can add sound here if you want
+            // const audio = new Audio('celebration-sound.mp3');
+            // audio.play();
+            
+            // Add heartbeat effect to the page
+            // document.body.style.animation = 'pulse 1s 3';
+        }
     </script>
 
 </body>
