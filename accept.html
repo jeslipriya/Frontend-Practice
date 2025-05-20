@@ -25,14 +25,15 @@
             <p class="celebration-subtext">Let's start this beautiful journey together!</p>
             
             <div class="video-reveal">
-                <div class="video-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-container" id="videoContainer">
+                    <!-- Video will be inserted here by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
     <div id="confetti-container"></div>
+    <!-- Audio element will be created by JavaScript -->
 
     <style>
         body {
@@ -130,27 +131,26 @@
 
         .video-reveal {
             animation: fadeIn 2s, slideUp 1.5s;
-            max-width: 800px;
+            max-width: 500px;
             margin: 0 auto;
         }
 
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
             overflow: hidden;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
         }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        
+        .video-container video {
             width: 100%;
             height: 100%;
+            object-fit: cover;
         }
-
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -194,6 +194,98 @@
                 opacity: 0;
             }
         }
+        
+        /* Balloon styles */
+        .balloon {
+            position: fixed;
+            border-radius: 50%;
+            z-index: 10;
+            animation: balloon-float linear forwards;
+            transform-origin: bottom center;
+        }
+        
+        .balloon-string {
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background-color: #333;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        @keyframes balloon-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Glitter styles */
+        .glitter {
+            position: fixed;
+            background-color: gold;
+            border-radius: 50%;
+            z-index: 10;
+            animation: glitter-sparkle ease-in-out infinite;
+            transform: scale(0);
+            box-shadow: 0 0 10px gold;
+        }
+        
+        @keyframes glitter-sparkle {
+            0%, 100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Color paper styles */
+        .color-paper {
+            position: fixed;
+            z-index: 10;
+            opacity: 0;
+            transform-origin: center;
+        }
+        
+        .color-paper.left {
+            left: -50px;
+            animation: paper-fly-right linear forwards;
+        }
+        
+        .color-paper.right {
+            right: -50px;
+            animation: paper-fly-left linear forwards;
+        }
+        
+        @keyframes paper-fly-right {
+            0% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes paper-fly-left {
+            0% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-100vw) rotate(-360deg);
+                opacity: 0;
+            }
+        }
     </style>
 
     <script>
@@ -204,6 +296,29 @@
             
             // Show response
             document.getElementById('response').classList.remove('hidden');
+            
+            // Create and play video
+            const videoContainer = document.getElementById('videoContainer');
+            const video = document.createElement('video');
+            video.id = 'celebrationVideo';
+            video.width = 400;
+            video.height = 400;
+            video.controls = true;
+            video.autoplay = true;
+            
+            const source = document.createElement('source');
+            source.src = 'images/song.mp4';
+            source.type = 'video/mp4';
+            
+            video.appendChild(source);
+            videoContainer.appendChild(video);
+            
+            // Create and play audio
+            const audio = document.createElement('audio');
+            audio.id = 'celebrationAudio';
+            audio.src = 'images/song.mp3';
+            audio.autoplay = true;
+            document.body.appendChild(audio);
             
             // Start celebrations
             createConfetti();
@@ -257,14 +372,124 @@
         }
         
         function playCelebration() {
-            // You can add sound here if you want
-            // const audio = new Audio('celebration-sound.mp3');
-            // audio.play();
+            // Create balloons falling from top
+            createBalloons();
             
-            // Add heartbeat effect to the page
-            // document.body.style.animation = 'pulse 1s 3';
+            // Create glitters sparkling around
+            createGlitters();
+            
+            // Create color papers popping from sides
+            createColorPapers();
+        }
+
+        function createBalloons() {
+            const balloonColors = ['#ff6b6b', '#6b6bff', '#6bff6b', '#ffff6b', '#ff6bff', '#6bffff'];
+            const container = document.body;
+            
+            for (let i = 0; i < 20; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                
+                // Random properties
+                const size = Math.random() * 40 + 30;
+                const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 10 + 10;
+                const delay = Math.random() * 5;
+                
+                // Apply styles
+                balloon.style.width = `${size}px`;
+                balloon.style.height = `${size * 1.2}px`;
+                balloon.style.backgroundColor = color;
+                balloon.style.left = `${left}vw`;
+                balloon.style.animationDuration = `${animationDuration}s`;
+                balloon.style.animationDelay = `${delay}s`;
+                
+                // Add string
+                const string = document.createElement('div');
+                string.className = 'balloon-string';
+                balloon.appendChild(string);
+                
+                container.appendChild(balloon);
+            }
+        }
+
+        function createGlitters() {
+            const container = document.body;
+            
+            for (let i = 0; i < 50; i++) {
+                const glitter = document.createElement('div');
+                glitter.className = 'glitter';
+                
+                // Random properties
+                const size = Math.random() * 10 + 5;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const animationDuration = Math.random() * 3 + 1;
+                const delay = Math.random() * 2;
+                
+                // Apply styles
+                glitter.style.width = `${size}px`;
+                glitter.style.height = `${size}px`;
+                glitter.style.left = `${left}vw`;
+                glitter.style.top = `${top}vh`;
+                glitter.style.animationDuration = `${animationDuration}s`;
+                glitter.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(glitter);
+            }
+        }
+
+        function createColorPapers() {
+            const colors = ['#ff6b6b', '#ffb8b8', '#6b6bff', '#b8b8ff', '#6bff6b', '#b8ffb8'];
+            const container = document.body;
+            
+            // Left side papers
+            for (let i = 0; i < 15; i++) {
+                const paper = document.createElement('div');
+                paper.className = 'color-paper left';
+                
+                // Random properties
+                const size = Math.random() * 20 + 10;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const top = Math.random() * 100;
+                const animationDuration = Math.random() * 2 + 1;
+                const delay = Math.random() * 1;
+                
+                // Apply styles
+                paper.style.width = `${size}px`;
+                paper.style.height = `${size}px`;
+                paper.style.backgroundColor = color;
+                paper.style.top = `${top}vh`;
+                paper.style.animationDuration = `${animationDuration}s`;
+                paper.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(paper);
+            }
+            
+            // Right side papers
+            for (let i = 0; i < 15; i++) {
+                const paper = document.createElement('div');
+                paper.className = 'color-paper right';
+                
+                // Random properties
+                const size = Math.random() * 20 + 10;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const top = Math.random() * 100;
+                const animationDuration = Math.random() * 2 + 1;
+                const delay = Math.random() * 1;
+                
+                // Apply styles
+                paper.style.width = `${size}px`;
+                paper.style.height = `${size}px`;
+                paper.style.backgroundColor = color;
+                paper.style.top = `${top}vh`;
+                paper.style.animationDuration = `${animationDuration}s`;
+                paper.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(paper);
+            }
         }
     </script>
-
 </body>
 </html>
